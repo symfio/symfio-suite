@@ -1,0 +1,30 @@
+{
+  "name": "symfio-suite"
+, "version": "1.0.0"
+, "description": "Test suite for Symfio plugins."
+, "homepage": "http://symf.io"
+, "bugs": {
+    "url": "https://github.com/symfio/symfio-suite/issues"
+  , "email": "webmaster@rithis.com"
+  }
+, "author": {
+    "name": "Vyacheslav Slinko"
+  , "email": "vyacheslav.slinko@gmail.com"
+  }
+, "main": "lib/suite"
+, "repository": {
+    "type": "git"
+  , "url": "git://github.com/symfio/symfio-suite.git"
+  }
+, "dependencies": {
+    "chai": "~1.5"
+  , "chai-http": "~0.3"
+  , "sinon": "~1.6"
+  , "sinon-chai": "~2.3"
+  }
+, "engines": {
+    "node": "~0.8"
+  , "npm": "~1.2"
+  , "coffee-script": "~1.6"
+  }
+}
