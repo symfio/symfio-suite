@@ -21,6 +21,7 @@
   , "chai-http": "~0.3"
   , "sinon": "~1.6"
   , "sinon-chai": "~2.3"
+  , "zombie": "~1.4"
   }
 , "engines": {
     "node": "~0.8"

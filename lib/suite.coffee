@@ -1,3 +1,4 @@
+browser = require "zombie"
 sinon = require "sinon"
 chai = require "chai"
 
@@ -24,6 +25,35 @@ module.exports.http = (container) ->
 
     unloader = container.get "unloader"
     unloader.once "unloaded", callback
+    unloader.unload()
+
+  wrapper(suite)
+
+
+module.exports.browser = (container) ->
+  suite =
+    expect: chai.expect
+    assert: chai.assert
+
+  container.set "silent", true
+
+  before (callback) ->
+    @timeout 10000
+
+    loader = container.get "loader"
+
+    loader.on "loaded", ->
+      suite.browser = new browser
+      suite.browser.site = "http://localhost:#{container.get 'port'}"
+      callback()
+
+    loader.load()
+
+  after (callback) ->
+    @timeout 10000
+
+    unloader = container.get "unloader"
+    unloader.on "unloaded", callback
     unloader.unload()
 
   wrapper(suite)
