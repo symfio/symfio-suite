@@ -42,7 +42,7 @@ module.exports.browser = (container) ->
 
     loader = container.get "loader"
 
-    loader.on "loaded", ->
+    loader.once "loaded", ->
       suite.browser = new browser
       suite.browser.site = "http://localhost:#{container.get 'port'}"
       callback()
@@ -53,7 +53,7 @@ module.exports.browser = (container) ->
     @timeout 10000
 
     unloader = container.get "unloader"
-    unloader.on "unloaded", callback
+    unloader.once "unloaded", callback
     unloader.unload()
 
   wrapper(suite)
