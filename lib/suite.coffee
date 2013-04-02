@@ -13,7 +13,7 @@ module.exports.http = (container) ->
 
     loader = container.get "loader"
 
-    loader.on "loaded", ->
+    loader.once "loaded", ->
       suite.http = chai.request container.get "app"
       callback()
 
@@ -23,7 +23,7 @@ module.exports.http = (container) ->
     @timeout 10000
 
     unloader = container.get "unloader"
-    unloader.on "unloaded", callback
+    unloader.once "unloaded", callback
     unloader.unload()
 
   wrapper(suite)
