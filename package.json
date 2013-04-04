@@ -21,6 +21,7 @@
   , "chai-http": "~0.3"
   , "sinon": "~1.6"
   , "sinon-chai": "~2.3"
+  , "karma": "0.8.3"
   }
 , "engines": {
     "node": "~0.8"
