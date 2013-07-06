@@ -1,73 +1,80 @@
+callbacks = require "when/callbacks"
+methods = require "methods"
 sinon = require "sinon"
 chai = require "chai"
+w = require "when"
 
 
-module.exports.http = (container) ->
-  chai.use require "chai-http"
-  suite = expect: chai.expect
-
-  container.set "silent", true
-
-  before (callback) ->
-    @timeout 10000
-
-    loader = container.get "loader"
-
-    loader.once "loaded", ->
-      suite.http = chai.request container.get "app"
-      callback()
-
-    loader.load()
-
-  after (callback) ->
-    @timeout 10000
-
-    unloader = container.get "unloader"
-    unloader.once "unloaded", callback
-    unloader.unload()
-
-  wrapper(suite)
+chai.use require "chai-as-promised"
+chai.use require "chai-http"
+chai.use require "sinon-chai"
+chai.should()
 
 
-module.exports.sandbox = (symfio, configurator) ->
-  chai.use require "sinon-chai"
-  suite = expect: chai.expect
+suitePlugin = (container) ->
+  container.set "env", "test"
+  container.set "chai", chai
+  container.set "sinon", sinon
 
-  beforeEach ->
-    suite.sandbox = sinon.sandbox.create()
-    containerConfigurator.call suite, symfio
-    configurator.call suite
+  container.set "request", (app, chai) ->
+    chaiRequest = chai.request app
+    request = {}
 
-  afterEach ->
-    suite.sandbox.restore()
+    methods.forEach (method) ->
+      method = "del" if method is "delete"
 
-  wrapper(suite)
+      request[method] = ->
+        req = chaiRequest[method].apply chaiRequest, arguments
+        req.then = ->
+          callbacks.call(req.res.bind req).then.apply null, arguments
+        req
+
+    request
+
+  container.set "sandbox", (sinon) ->
+    sinon.sandbox.create()
+
+  container.set "logger", (sandbox) ->
+    silly: sandbox.spy()
+    debug: sandbox.spy()
+    verbose: sandbox.spy()
+    info: sandbox.spy()
+    warn: sandbox.spy()
+    error: sandbox.spy()
 
 
-wrapper = (suite) ->
-  (test) ->
-    (callback) ->
-      if test.length > 0
-        test.call suite, callback
-      else
-        test.call suite
-        callback()
+wrappedIt = (message, test) ->
+  it message, (callback) ->
+    suite.container.inject(test).should.notify callback 
 
 
-containerConfigurator = (symfio) ->
-  @container = symfio.container()
+module.exports = suite =
+  ###
+  if __dirname is "/symfio-contrib-plugin/node_modules/symfio-suite/lib"
+  then require "/symfio-contrib-plugin/node_modules/symfio"
+  ###
+  symfio: require "../../symfio"
 
-  @container.set "name", "symfio"
-  @container.set "silent", true
+  example: (container) ->
+    container.inject suitePlugin
 
-  @sandbox.stub symfio.logger.Logger.prototype
-  @logger = new symfio.logger.Logger
-  @container.set "logger", @logger
+    before (callback) ->
+      @timeout 0
+      container.promise.then ->
+        suite.container = container
+      .should.notify callback
 
-  @sandbox.stub symfio.loader.Loader.prototype
-  @loader = new symfio.loader.Loader
-  @container.set "loader", @loader
+    wrappedIt
 
-  @sandbox.stub symfio.unloader.Unloader.prototype
-  @unloader = new symfio.unloader.Unloader
-  @container.set "unloader", @unloader
+  plugin: (plugins) ->
+    beforeEach (callback) ->
+      suite.container = module.exports.symfio "test", __dirname
+      suite.container.inject suitePlugin
+      suite.container.injectAll(plugins).should.notify callback
+
+    afterEach (callback) ->
+      suite.container.inject (sandbox) ->
+        sandbox.restore()
+      .should.notify callback
+
+    wrappedIt
