@@ -43,9 +43,15 @@ suitePlugin = (container) ->
     error: sandbox.spy()
 
 
-wrappedIt = (message, test) ->
-  it message, (callback) ->
-    suite.container.inject(test).should.notify callback 
+wrapIt = (it) ->
+  (message, test) ->
+    it message, (callback) ->
+      suite.container.inject(test).should.notify callback 
+
+
+wrappedIt = wrapIt it
+wrappedIt.only = wrapIt it.only
+wrappedIt.skip = it.skip
 
 
 module.exports = suite =
