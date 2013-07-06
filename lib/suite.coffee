@@ -43,14 +43,14 @@ suitePlugin = (container) ->
     error: sandbox.spy()
 
 
-wrapIt = (it) ->
-  (message, test) ->
-    it message, (callback) ->
-      suite.container.inject(test).should.notify callback 
+wrappedIt = (message, test) ->
+  it message, (callback) ->
+    suite.container.inject(test).should.notify callback
 
+wrappedIt.only = (message, test) ->
+  it.only message, (callback) ->
+    suite.container.inject(test).should.notify callback
 
-wrappedIt = wrapIt it
-wrappedIt.only = wrapIt it.only
 wrappedIt.skip = it.skip
 
 
