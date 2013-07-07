@@ -103,11 +103,13 @@ module.exports = suite =
 
     wrappedIt
 
-  plugin: (plugins) ->
+  plugin: (plugin) ->
     beforeEach (callback) ->
       suite.container = module.exports.symfio "test", __dirname
-      suite.container.inject suitePlugin
-      suite.container.injectAll(plugins).should.notify callback
+      suite.container.injectAll([
+        suitePlugin
+        plugin
+      ]).should.notify callback
 
     afterEach (callback) ->
       suite.container.inject (sandbox) ->
