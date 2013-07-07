@@ -42,7 +42,7 @@ suitePlugin = (container) ->
     warn: sandbox.spy()
     error: sandbox.spy()
 
-  container.set "promise", (sinon) ->
+  container.set "promise", (sandbox) ->
     promise = then: sandbox.stub()
     promise.then.yields()
     promise
