@@ -65,8 +65,11 @@ suitePlugin = (container) ->
       call = containerStub.inject.getCall num
       call.args[0]
 
+    containerStub.get.promise = then: sandbox.stub()
+    containerStub.get.returns containerStub.get.promise
     containerStub.inject.promise = then: sandbox.stub()
     containerStub.inject.returns containerStub.inject.promise
+
     containerStub
 
 
