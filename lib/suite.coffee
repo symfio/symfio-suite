@@ -42,12 +42,7 @@ suitePlugin = (container) ->
     warn: sandbox.spy()
     error: sandbox.spy()
 
-  container.set "promise", (sandbox) ->
-    promise = then: sandbox.stub()
-    promise.then.yields()
-    w.resolve promise
-
-  container.set "containerStub", (sandbox, promise) ->
+  container.set "containerStub", (sandbox) ->
     containerStub =
       set: sandbox.stub()
       has: sandbox.stub()
@@ -70,7 +65,8 @@ suitePlugin = (container) ->
       call = containerStub.inject.getCall num
       call.args[0]
 
-    containerStub.inject.returns promise
+    containerStub.inject.promise = then: sandbox.stub()
+    containerStub.inject.returns containerStub.inject.promise
     containerStub
 
 
