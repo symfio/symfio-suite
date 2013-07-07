@@ -45,7 +45,7 @@ suitePlugin = (container) ->
   container.set "promise", (sandbox) ->
     promise = then: sandbox.stub()
     promise.then.yields()
-    promise
+    w.resolve promise
 
   container.set "containerStub", (sandbox, promise) ->
     containerStub =
