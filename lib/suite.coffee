@@ -42,6 +42,31 @@ suitePlugin = (container) ->
     warn: sandbox.spy()
     error: sandbox.spy()
 
+  container.set "containerStub", (sandbox) ->
+    containerStub =
+      set: sandbox.stub()
+      has: sandbox.stub()
+      unless: sandbox.stub()
+      get: sandbox.stub()
+      inject: sandbox.stub()
+
+    containerStub.set.get = (key) ->
+      call = containerStub.set.withArgs key
+      call.should.be.calledOnce
+      call.firstCall.args[1]
+
+    containerStub.unless.get = (key) ->
+      call = containerStub.unless.withArgs key
+      call.should.be.calledOnce
+      call.firstCall.args[1]
+
+    containerStub.inject.get = (num) ->
+      containerStub.inject.callCount.should.be.above num
+      call = containerStub.inject.getCall num
+      call.args[0]
+
+    containerStub
+
 
 wrappedIt = (message, test) ->
   it message, (callback) ->
