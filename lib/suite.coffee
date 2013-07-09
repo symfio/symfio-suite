@@ -49,6 +49,7 @@ suitePlugin = (container) ->
       unless: sandbox.stub()
       get: sandbox.stub()
       inject: sandbox.stub()
+      require: sandbox.stub()
 
     containerStub.set.get = (key) ->
       call = containerStub.set.withArgs key
