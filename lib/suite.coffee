@@ -148,6 +148,17 @@ module.exports = suite = (container) ->
         call = container.inject.getCall num
         factory call.args[0], call.args[1]
 
+  container.set "required",
+    ["suite/container"],
+    (container) ->
+      (key) ->
+        call = container.require.withArgs key
+        call.should.be.calledOnce
+        if call.firstCall.args[1]
+          call.firstCall.args[1]
+        else
+          call.firstCall.args[0]
+
 
 suite.example = (container) ->
   container.inject suite
