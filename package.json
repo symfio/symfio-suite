@@ -18,6 +18,7 @@
   }
 , "dependencies": {
     "when": "~2.2"
+  , "parse-fn-args": "~0.0"
   , "methods": "~0.0"
   , "chai": "~1.7"
   , "chai-as-promised": "~3.3"

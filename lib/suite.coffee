@@ -30,11 +30,7 @@ module.exports = suite = (container) ->
   container.set "sinon", require "sinon"
   
   container.set "suite/parseArguments", ->
-    (fun) ->
-      fun.toString()
-        .match(/function\s+\w*\s*\((.*?)\)/)[1]
-        .split(/\s*,\s*/)
-        .filter((arg) -> arg.length > 0)
+    require "parse-fn-args"
 
   container.set "suite/factory",
     ["suite/parseArguments", "w"],
