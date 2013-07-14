@@ -1,6 +1,6 @@
 {
   "name": "symfio-suite"
-, "version": "2.0.13"
+, "version": "2.0.14"
 , "description": "Test suite for Symfio plugins."
 , "homepage": "http://symf.io"
 , "bugs": {
