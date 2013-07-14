@@ -42,6 +42,13 @@ module.exports = suite = (container) ->
       (dependencies, factory) ->
         if factory is undefined
           factory = dependencies
+          dependencies = undefined
+
+        unless typeof factory is "function"
+          return ->
+            w.resolve factory
+
+        unless dependencies
           dependencies = parseArguments factory
 
         factoryStub = ->
